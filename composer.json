@@ -1,0 +1,11 @@
+{
+    "name": "hantu/sitemap",
+    "description": "Sitemap for Laravel Apps",
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Hantu\\Sitemap\\": "src/"
+        }
+    }
+}
