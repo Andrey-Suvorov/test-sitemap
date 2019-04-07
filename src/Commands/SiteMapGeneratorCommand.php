@@ -3,7 +3,6 @@
 namespace Hantu\Sitemap\Commands;
 
 use App;
-use Hantu\Sitemap\Helpers\SitemapHelper;
 use Hantu\Sitemap\Models\Sitemap;
 use Illuminate\Console\Command;
 use Storage;
@@ -42,8 +41,6 @@ class SiteMapGeneratorCommand extends Command
      */
     public function handle()
     {
-        SitemapHelper::loadUrls();
-
         $pages = Sitemap::onlyActive()
             ->get(['alias', 'lastmod', 'priority', 'changefreq'])
             ->toArray();
