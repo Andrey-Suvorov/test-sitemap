@@ -12,20 +12,22 @@ class SiteMapServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'sitemap');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'sitemap');
+        $this->commands([
+            SiteMapGeneratorCommand::class
+        ]);
+
+        $this->publishes([
+            __DIR__.'/../resources/lang' => resource_path('lang/vendor/sitemap'),
+        ], 'sitemap-lang');
 
         $this->publishes([
             __DIR__.'/../config/sitemap.php' => config_path('sitemap.php'),
         ], 'sitemap-config');
 
-
         $this->publishes([
             __DIR__.'/../database/migrations' => base_path('database/migrations'),
         ], 'sitemap-migrations');
-
-        $this->commands([
-            SiteMapGeneratorCommand::class
-        ]);
-
 
         $this->publishes([
             __DIR__.'/../resources/views' => base_path('resources/views/vendor/sitemap'),

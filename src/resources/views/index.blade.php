@@ -1,6 +1,6 @@
 @extends('sitemap::layouts.app')
 
-@section('title', __('backend.seo-sitemap'))
+@section('title', __('sitemap::sitemap.seo-sitemap'))
 @section('title_sm', $sitemap->total())
 
 {{--@section('search')--}}
@@ -14,10 +14,10 @@
                     <h4></h4>
                 </div>
                 <div class="col-6 col-md-4 col-lg-2"><p>
-                        <a href="{{ route('backend.sitemap.generate') }}" data-do="link" data-dialog="@lang('backend.fill_db_dialog')"
+                        <a href="{{ route(config('sitemap.route_prefix') . '.sitemap.generate') }}" data-do="link" data-dialog="@lang('sitemap::sitemap.fill_db_dialog')"
                            class="btn btn-block btn-sm btn-warning text-uppercase">
                             <span class="fa fa-warning"></span>
-                            <b>@lang('backend.fill_db')</b>
+                            <b>@lang('sitemap::sitemap.fill_db')</b>
                         </a>
 
                         {{--<a href="{{ route('backend.sitemap.index') }}" class="btn btn-block btn-sm btn-success text-uppercase">--}}
@@ -32,11 +32,11 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>@lang('backend.url')</th>
-                <th>@lang('backend.priority')</th>
-                <th>@lang('backend.changefreq')</th>
-                <th>@lang('backend.lastmod')</th>
-                <th class="text-center">@lang('backend.active')</th>
+                <th>@lang('sitemap::sitemap.url')</th>
+                <th>@lang('sitemap::sitemap.priority')</th>
+                <th>@lang('sitemap::sitemap.changefreq')</th>
+                <th>@lang('sitemap::sitemap.lastmod')</th>
+                <th class="text-center">@lang('sitemap::sitemap.active')</th>
                 <th width="300px"></th>
             </tr>
             </thead>
@@ -49,24 +49,33 @@
                     <td>{{ $map->lastmod }}</td>
                     <td class="text-center">
                         @if($map->is_active)
-                            <span class="label label-success">@lang('backend.yes')</span>
+                            <span class="label label-success">@lang('sitemap::sitemap.yes')</span>
                         @else
-                            <span class="label label-danger">@lang('backend.no')</span>
+                            <span class="label label-danger">@lang('sitemap::sitemap.no')</span>
                         @endif
                     </td>
                     <td class="text-right">
-                        @include('backend.elements.edit_buttons', [
-                                'edit_link'    => route('backend.sitemap.edit', ['sitemap'=> $map]),
-                                'destroy_link' => route('backend.sitemap.destroy', ['sitemap'=> $map]),
-                                'model'        => $map,
-                        ])
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                            {!! Form::open(array('url' => route(config('sitemap.route_prefix') . '.sitemap.destroy', $map), 'method' => 'DELETE', 'style' => 'margin-bottom: 0px;')) !!}
+                                <button class="delete-btn btn btn-danger btn-sm text-uppercase pull-right disabled-link"
+                                        onclick="@lang('sitemap::sitemap.delete_question')"
+                                        title="">@lang('sitemap::sitemap.delete')
+                                </button>
+                            {!! Form::close() !!}
+
+                            <a href="{{ route(config('sitemap.route_prefix') . '.sitemap.edit', $map) }}"
+                               class="btn btn-sm btn-primary text-uppercase pull-right">
+                                <i class="fa fa-edit"></i>
+                                <span class="hidden-xs hidden-sm hidden-md">@lang('sitemap::sitemap.edit')</span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             @empty
                 <tr>
                     <td colspan="6" class="bg-warning">
                         <h3 class="text-center">
-                            @lang('backend.nothing_found')
+                            @lang('sitemap::sitemap.nothing_found')
                         </h3>
                     </td>
                 </tr>

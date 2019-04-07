@@ -2,7 +2,9 @@
     "name": "hantu/sitemap",
     "description": "Sitemap for Laravel Apps",
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "laravelcollective/html":"^5.8.0"
+    },
     "autoload": {
         "psr-4": {
             "Hantu\\Sitemap\\": "src/"

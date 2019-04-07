@@ -6,8 +6,10 @@ namespace Hantu\Sitemap\Http\Controllers;
 //use App\Models\Seo\Sitemap;
 //use App\Repositories\SitemapRepository;
 use Artisan;
+use Hantu\Sitemap\Interfaces\SItemapUrlsInterface;
 use Hantu\Sitemap\Models\Sitemap;
 use Hantu\Sitemap\Repositories\SitemapRepository;
+use Hantu\Sitemap\Request\SitemapRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -56,9 +58,9 @@ class SitemapController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SitemapRequest $request)
     {
-        //
+
     }
 
     /**
@@ -72,8 +74,8 @@ class SitemapController extends Controller
         Artisan::call('sitemap');
 
         return redirect()
-            ->route('backend.sitemap.index')
-            ->with('success', ['text' => __('backend.sitemap_generated'). $count] );
+            ->route('sitemap::index')
+            ->with('success', ['text' => __('sitemap::sitemap.sitemap_generated'). $count] );
     }
 
     /**
@@ -99,7 +101,7 @@ class SitemapController extends Controller
     {
         $sitemap = Sitemap::findOrFail($id);
 
-        return view('backend.seo-sitemap.edit', [
+        return view('sitemap::edit', [
             'sitemap' => $sitemap,
             'changefreq' => Sitemap::$changefreq,
         ]);
@@ -126,9 +128,9 @@ class SitemapController extends Controller
 
         return redirect(
             $request->get('action') == 'continue'
-                ? route('backend.sitemap.edit', ['id' => $sitemap])
-                : route('backend.sitemap.index')
-        )->with('success', __('backend.sitemap_updated'));
+                ? route(config('sitemap.route_prefix') . '.sitemap.edit', ['id' => $sitemap])
+                : route(config('sitemap.route_prefix') . '.sitemap.index')
+        )->with('success', __('sitemap::sitemap.sitemap_updated'));
 
     }
 
@@ -143,8 +145,32 @@ class SitemapController extends Controller
     {
         Sitemap::destroy($id);
         Artisan::call('sitemap');
-        return redirect()->route('backend.sitemap.index')
-            ->with('success',  __('backend.sitemap_deleted'));
+        return redirect()->route(config('sitemap.route_prefix') . '.sitemap.index')
+            ->with('success',  __('sitemap::sitemap.sitemap_deleted'));
+    }
+
+    public function loadUrls()
+    {
+        $staticRoutes = config('sitemap.static_routes');
+
+        foreach($staticRoutes as $routeName) {
+            Sitemap::updateOrCreate(['alias' => route($routeName)]);
+        }
+
+        $dynamicUrlsModels = config('sitemap.dynamic_url_classes');
+
+        foreach ($dynamicUrlsModels as $model) {
+            $model = new $model();
+            if ($model instanceof SItemapUrlsInterface) {
+                $modelUrls = $model->getUrls();
+                foreach ($modelUrls as $url) {
+                    Sitemap::updateOrCreate(['alias' => $url]);
+                }
+            }
+        }
+
+        return redirect()->back()
+            ->with('success',  __('sitemap::sitemap.sitemap_loaded'));
     }
 
 

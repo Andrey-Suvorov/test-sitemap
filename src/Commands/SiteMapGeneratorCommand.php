@@ -3,6 +3,7 @@
 namespace Hantu\Sitemap\Commands;
 
 use App;
+use Hantu\Sitemap\Helpers\SitemapHelper;
 use Hantu\Sitemap\Models\Sitemap;
 use Illuminate\Console\Command;
 use Storage;
@@ -41,7 +42,8 @@ class SiteMapGeneratorCommand extends Command
      */
     public function handle()
     {
-        $entities = [];
+        SitemapHelper::loadUrls();
+
         $pages = Sitemap::onlyActive()
             ->get(['alias', 'lastmod', 'priority', 'changefreq'])
             ->toArray();
@@ -50,7 +52,7 @@ class SiteMapGeneratorCommand extends Command
 
         $bar->start();
         foreach ($pages as $page) {
-            foreach (config('app.locales') as $lang) {
+            foreach (config('sitemap.locales') as $lang) {
                 $page = array_merge($page, ['locale' => $lang]);
                 $sitemap .= view('sitemap::url', $page)->render();
             }

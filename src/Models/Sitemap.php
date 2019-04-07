@@ -9,7 +9,7 @@ class Sitemap extends Model
 {
     public $timestamps = false;
     protected $table = 'sitemap';
-    protected $fillable = ['model_id', 'alias', 'model', 'priority', 'lastmod', 'changefreq', 'is_active'];
+    protected $fillable = ['alias', 'priority', 'lastmod', 'changefreq', 'is_active'];
 
     public static $changefreq = [
         'always',
@@ -20,10 +20,6 @@ class Sitemap extends Model
         'yearly',
         'never',
     ];
-
-    public function entity(){
-        return $this->morphTo($this->model, 'model', 'model_id', 'id');
-    }
 
     public function scopeOnlyActive($query)
     {
