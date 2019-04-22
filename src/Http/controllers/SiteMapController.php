@@ -48,19 +48,35 @@ class SitemapController extends Controller
      */
     public function create()
     {
-        //
+        return view('sitemap::create', [
+            'changefreq' => Sitemap::$changefreq,
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
     public function store(SitemapRequest $request)
     {
+        $sitemap = new Sitemap();
+        $sitemap->alias = $request->alias;
+        $sitemap->lastmod = $request->lastmod;
+        $sitemap->priority = (isset($request->priority)) ? $request->priority : 0;
+        $sitemap->changefreq = $request->changefreq;
+        $sitemap->is_active = isset($request->is_active);
+        $sitemap->save();
 
+        Artisan::call('sitemap');
+
+        return redirect(
+            $request->get('action') == 'continue'
+                ? route(config('sitemap.route_prefix') . '.sitemap.edit', ['id' => $sitemap])
+                : route(config('sitemap.route_prefix') . '.sitemap.index')
+        )->with('success', __('sitemap::sitemap.sitemap_created'));
     }
 
     /**
@@ -75,7 +91,7 @@ class SitemapController extends Controller
 
         return redirect()
             ->route('sitemap::index')
-            ->with('success', ['text' => __('sitemap::sitemap.sitemap_generated'). $count] );
+            ->with('success', ['text' => __('sitemap::sitemap.sitemap_generated') . $count]);
     }
 
     /**
@@ -93,7 +109,7 @@ class SitemapController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -117,11 +133,11 @@ class SitemapController extends Controller
      */
     public function update(SitemapRequest $request, $id)
     {
-        $sitemap             = Sitemap::find($id);
-        $sitemap->lastmod    = $request->lastmod;
-        $sitemap->priority   = $request->priority;
+        $sitemap = Sitemap::find($id);
+        $sitemap->lastmod = $request->lastmod;
+        $sitemap->priority = $request->priority;
         $sitemap->changefreq = $request->changefreq;
-        $sitemap->is_active  = isset($request->is_active);
+        $sitemap->is_active = isset($request->is_active);
         $sitemap->save();
 
         Artisan::call('sitemap');
@@ -137,7 +153,7 @@ class SitemapController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -146,14 +162,14 @@ class SitemapController extends Controller
         Sitemap::destroy($id);
         Artisan::call('sitemap');
         return redirect()->route(config('sitemap.route_prefix') . '.sitemap.index')
-            ->with('success',  __('sitemap::sitemap.sitemap_deleted'));
+            ->with('success', __('sitemap::sitemap.sitemap_deleted'));
     }
 
     public function loadUrls()
     {
         $staticRoutes = config('sitemap.static_routes');
 
-        foreach($staticRoutes as $routeName) {
+        foreach ($staticRoutes as $routeName) {
             Sitemap::updateOrCreate(['alias' => route($routeName)]);
         }
 
@@ -170,7 +186,7 @@ class SitemapController extends Controller
         }
 
         return redirect()->back()
-            ->with('success',  __('sitemap::sitemap.sitemap_loaded'));
+            ->with('success', __('sitemap::sitemap.sitemap_loaded'));
     }
 
 

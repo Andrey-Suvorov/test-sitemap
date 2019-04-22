@@ -1,5 +1,25 @@
 <?php
 
-    return [
-        'fill_db' => 'Заполнить БД'
-    ];
+return [
+    'fill_db' => 'Fill DB',
+    'changefreq' => 'Changefreq',
+    'priority' => 'Priority',
+    'url' => 'URL',
+    'lastmod' => 'Lastmod',
+    'active' => 'Active',
+    'seo-sitemap' => 'Sitemap',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'yes' => 'Yes',
+    'no' => 'No',
+    'base' => 'Base',
+    'back' => 'Back',
+    'save' => 'Save',
+    'create' => 'Create',
+    'sitemap_updated' => 'Updated',
+    'sitemap_created' => 'Created',
+    'sitemap_deleted' => 'Deleted',
+    'sitemap_generated' => 'Generated',
+    'sitemap_loaded' => 'Loaded',
+    'delete_question' => 'Are you sure you want to delete this link?',
+];

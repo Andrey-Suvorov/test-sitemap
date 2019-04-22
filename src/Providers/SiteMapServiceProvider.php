@@ -22,6 +22,10 @@ class SiteMapServiceProvider extends ServiceProvider
         ], 'sitemap-lang');
 
         $this->publishes([
+            __DIR__.'/../resources/assets' => public_path('vendor/sitemap'),
+        ], 'sitemap-syles');
+
+        $this->publishes([
             __DIR__.'/../config/sitemap.php' => config_path('sitemap.php'),
         ], 'sitemap-config');
 
