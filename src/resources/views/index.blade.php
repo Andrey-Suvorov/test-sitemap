@@ -3,10 +3,6 @@
 @section('title', __('sitemap::sitemap.seo-sitemap'))
 @section('title_sm', $sitemap->total())
 
-{{--@section('search')--}}
-    {{--@include('backend.elements.search', [ 'url' => route('backend.sitemap.index')])--}}
-{{--@endsection--}}
-
 @section('content')
 
             <div class="row">
@@ -14,6 +10,11 @@
                     <h4></h4>
                 </div>
                 <div class="col-6 col-md-4 col-lg-2"><p>
+                        <a href="{{ route(config('sitemap.route_prefix') . '.sitemap.load.urls') }}" data-do="link" data-dialog="@lang('sitemap::sitemap.fill_db_dialog')"
+                           class="btn btn-block btn-sm btn-warning text-uppercase">
+                            <b>@lang('sitemap::sitemap.load_urls')</b>
+                        </a>
+
                         <a href="{{ route(config('sitemap.route_prefix') . '.sitemap.generate') }}" data-do="link" data-dialog="@lang('sitemap::sitemap.fill_db_dialog')"
                            class="btn btn-block btn-sm btn-warning text-uppercase">
                             <b>@lang('sitemap::sitemap.fill_db')</b>

@@ -25,7 +25,7 @@ class SitemapRequest extends FormRequest
     public function rules()
     {
         return [
-            'alias' => 'required|unique:sitemap,alias'.$this->route('sitemap'),
+            'alias' => 'required|unique:sitemap,alias,'.$this->route('sitemap'),
         ];
     }
 

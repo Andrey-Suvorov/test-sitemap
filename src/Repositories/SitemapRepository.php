@@ -9,6 +9,7 @@
 namespace Hantu\Sitemap\Repositories;
 
 use DB;
+use Hantu\Sitemap\Models\Sitemap;
 use Illuminate\Http\Request;
 
 class SitemapRepository

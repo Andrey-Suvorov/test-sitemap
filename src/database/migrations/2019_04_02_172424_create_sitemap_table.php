@@ -20,6 +20,8 @@ class CreateSitemapTable extends Migration
             $table->date('lastmod')->nullable();
             $table->string('changefreq')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_loaded')->default(false);
+            $table->integer('order')->nullable();
         });
     }
 

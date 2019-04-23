@@ -22,4 +22,6 @@ return [
     'sitemap_generated' => 'Generated',
     'sitemap_loaded' => 'Loaded',
     'delete_question' => 'Are you sure you want to delete this link?',
+    'load_urls' => 'Load dynamic URL\'s',
+    'nothing_found' => 'Nothing found',
 ];

@@ -2,9 +2,6 @@
 
 namespace Hantu\Sitemap\Http\Controllers;
 
-//use App\Http\Requests\SitemapRequest;
-//use App\Models\Seo\Sitemap;
-//use App\Repositories\SitemapRepository;
 use Artisan;
 use Hantu\Sitemap\Interfaces\SItemapUrlsInterface;
 use Hantu\Sitemap\Models\Sitemap;
@@ -68,6 +65,7 @@ class SitemapController extends Controller
         $sitemap->priority = (isset($request->priority)) ? $request->priority : 0;
         $sitemap->changefreq = $request->changefreq;
         $sitemap->is_active = isset($request->is_active);
+        $sitemap->order = (isset($request->order)) ? $request->order : Sitemap::all()->count() + 1;
         $sitemap->save();
 
         Artisan::call('sitemap');
@@ -90,7 +88,7 @@ class SitemapController extends Controller
         Artisan::call('sitemap');
 
         return redirect()
-            ->route('sitemap::index')
+            ->route(config('sitemap.route_prefix') . '.sitemap.index')
             ->with('success', ['text' => __('sitemap::sitemap.sitemap_generated') . $count]);
     }
 
@@ -134,10 +132,12 @@ class SitemapController extends Controller
     public function update(SitemapRequest $request, $id)
     {
         $sitemap = Sitemap::find($id);
+        $sitemap->alias = $request->alias;
         $sitemap->lastmod = $request->lastmod;
         $sitemap->priority = $request->priority;
         $sitemap->changefreq = $request->changefreq;
         $sitemap->is_active = isset($request->is_active);
+        $sitemap->order = (isset($request->order)) ? $request->order : Sitemap::all()->count() + 1;
         $sitemap->save();
 
         Artisan::call('sitemap');
@@ -165,22 +165,33 @@ class SitemapController extends Controller
             ->with('success', __('sitemap::sitemap.sitemap_deleted'));
     }
 
+    /**
+     * Load additional urls
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function loadUrls()
     {
+        Sitemap::where('is_loaded', 1)->delete();
+
+        $sitemapCount = Sitemap::all()->count();
         $staticRoutes = config('sitemap.static_routes');
 
         foreach ($staticRoutes as $routeName) {
-            Sitemap::updateOrCreate(['alias' => route($routeName)]);
+            $sitemapCount++;
+            Sitemap::updateOrCreate(['alias' => route($routeName), 'order' => $sitemapCount, 'is_loaded' => 1]);
         }
 
         $dynamicUrlsModels = config('sitemap.dynamic_url_classes');
+
+
 
         foreach ($dynamicUrlsModels as $model) {
             $model = new $model();
             if ($model instanceof SItemapUrlsInterface) {
                 $modelUrls = $model->getUrls();
                 foreach ($modelUrls as $url) {
-                    Sitemap::updateOrCreate(['alias' => $url]);
+                    $sitemapCount++;
+                    Sitemap::updateOrCreate(['alias' => $url, 'order' => $sitemapCount, 'is_loaded' => 1]);
                 }
             }
         }

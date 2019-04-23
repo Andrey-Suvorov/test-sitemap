@@ -9,7 +9,7 @@ class Sitemap extends Model
 {
     public $timestamps = false;
     protected $table = 'sitemap';
-    protected $fillable = ['alias', 'priority', 'lastmod', 'changefreq', 'is_active'];
+    protected $fillable = ['alias', 'priority', 'lastmod', 'changefreq', 'is_active', 'is_loaded', 'order'];
 
     public static $changefreq = [
         'always',
