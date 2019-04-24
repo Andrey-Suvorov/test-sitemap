@@ -15,9 +15,9 @@
                             <b>@lang('sitemap::sitemap.load_urls')</b>
                         </a>
 
-                        <a href="{{ route(config('sitemap.route_prefix') . '.sitemap.generate') }}" data-do="link" data-dialog="@lang('sitemap::sitemap.fill_db_dialog')"
+                        <a href="{{ route(config('sitemap.route_prefix') . '.sitemap.generate') }}" data-do="link" data-dialog="@lang('sitemap::sitemap.generate_sitemap')"
                            class="btn btn-block btn-sm btn-warning text-uppercase">
-                            <b>@lang('sitemap::sitemap.fill_db')</b>
+                            <b>@lang('sitemap::sitemap.generate_sitemap')</b>
                         </a>
 
                         <a href="{{ route(config('sitemap.route_prefix') . '.sitemap.create') }}" class="btn btn-block btn-sm btn-success text-uppercase">

@@ -24,4 +24,5 @@ return [
     'delete_question' => 'Are you sure you want to delete this link?',
     'load_urls' => 'Load dynamic URL\'s',
     'nothing_found' => 'Nothing found',
+    'generate_sitemap' => 'Generate site map',
 ];

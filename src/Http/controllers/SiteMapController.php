@@ -84,12 +84,11 @@ class SitemapController extends Controller
      */
     public function generate()
     {
-        $count = $this->repo->generate();
         Artisan::call('sitemap');
 
         return redirect()
             ->route(config('sitemap.route_prefix') . '.sitemap.index')
-            ->with('success', ['text' => __('sitemap::sitemap.sitemap_generated') . $count]);
+            ->with('success', ['text' => __('sitemap::sitemap.sitemap_generated')]);
     }
 
     /**
@@ -171,30 +170,7 @@ class SitemapController extends Controller
      */
     public function loadUrls()
     {
-        Sitemap::where('is_loaded', 1)->delete();
-
-        $sitemapCount = Sitemap::all()->count();
-        $staticRoutes = config('sitemap.static_routes');
-
-        foreach ($staticRoutes as $routeName) {
-            $sitemapCount++;
-            Sitemap::updateOrCreate(['alias' => route($routeName), 'order' => $sitemapCount, 'is_loaded' => 1]);
-        }
-
-        $dynamicUrlsModels = config('sitemap.dynamic_url_classes');
-
-
-
-        foreach ($dynamicUrlsModels as $model) {
-            $model = new $model();
-            if ($model instanceof SItemapUrlsInterface) {
-                $modelUrls = $model->getUrls();
-                foreach ($modelUrls as $url) {
-                    $sitemapCount++;
-                    Sitemap::updateOrCreate(['alias' => $url, 'order' => $sitemapCount, 'is_loaded' => 1]);
-                }
-            }
-        }
+        $this->repo->loadUrls();
 
         return redirect()->back()
             ->with('success', __('sitemap::sitemap.sitemap_loaded'));

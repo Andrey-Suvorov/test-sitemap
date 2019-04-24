@@ -9,6 +9,7 @@
 namespace Hantu\Sitemap\Repositories;
 
 use DB;
+use Hantu\Sitemap\Interfaces\SitemapUrlsInterface;
 use Hantu\Sitemap\Models\Sitemap;
 use Illuminate\Http\Request;
 
@@ -51,22 +52,35 @@ class SitemapRepository
     }
 
     /**
-     * Generate full site sitemap in database
+     * Load URL's
      *
      * @return int
      */
-    public function generate()
+    public function loadUrls()
     {
-        DB::table('sitemap')->truncate();
-        $i = 0;
-        foreach ($this->pages as $page) {
-            Sitemap::create([
-                'alias' => route($page),
-                'is_active' => true,
-            ]);
-            $i++;
+        Sitemap::where('is_loaded', 1)->delete();
+
+        $sitemapCount = Sitemap::all()->count();
+        $staticRoutes = config('sitemap.static_routes');
+
+        foreach ($staticRoutes as $routeName) {
+            $sitemapCount++;
+            Sitemap::updateOrCreate(['alias' => route($routeName), 'order' => $sitemapCount, 'is_loaded' => 1]);
         }
 
-        return $i;
+        $dynamicUrlsModels = config('sitemap.dynamic_url_classes');
+
+
+
+        foreach ($dynamicUrlsModels as $model) {
+            $model = new $model();
+            if ($model instanceof SitemapUrlsInterface) {
+                $modelUrls = $model->getUrls();
+                foreach ($modelUrls as $url) {
+                    $sitemapCount++;
+                    Sitemap::updateOrCreate(['alias' => $url, 'order' => $sitemapCount, 'is_loaded' => 1]);
+                }
+            }
+        }
     }
 }
