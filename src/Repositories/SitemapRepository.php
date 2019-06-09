@@ -8,7 +8,7 @@
 
 namespace Hantu\Sitemap\Repositories;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Hantu\Sitemap\Models\Sitemap;
 use Illuminate\Http\Request;
 
@@ -23,9 +23,17 @@ class SitemapRepository
         $this->pages = config('sitemap.static_routes');
     }
 
-    public function store()
+    public function store(Sitemap $sitemap)
     {
+        $sitemap->alias = $this->request->alias;
+        $sitemap->lastmod = $this->request->lastmod;
+        $sitemap->priority = $this->request->priority;
+        $sitemap->changefreq = $this->request->changefreq;
+        $sitemap->is_active = isset($this->request->is_active);
+        $sitemap->order = (isset($this->request->order)) ? $this->request->order : Sitemap::all()->count() + 1;
+        $sitemap->save();
 
+        return $sitemap;
     }
 
     /**
@@ -58,31 +66,42 @@ class SitemapRepository
     /**
      * Load URL's
      *
-     * @return int
+     * @throws \Exception
      */
     public function loadUrls()
     {
-        Sitemap::where('is_loaded', 1)->delete();
+        DB::beginTransaction();
 
-        $sitemapCount = Sitemap::all()->count();
-        $staticRoutes = config('sitemap.static_routes');
+        try {
+            Sitemap::where('is_loaded', 1)->delete();
 
-        foreach ($staticRoutes as $routeName) {
-            $sitemapCount++;
-            Sitemap::updateOrCreate(['alias' => route($routeName), 'order' => $sitemapCount, 'is_loaded' => 1]);
-        }
+            $sitemapCount = Sitemap::all()->count();
+            $staticRoutes = config('sitemap.static_routes');
 
-        $dynamicUrlsModels = config('sitemap.dynamic_url_classes');
+            foreach ($staticRoutes as $routeName) {
+                $sitemapCount++;
+                Sitemap::updateOrCreate(['alias' => route($routeName), 'order' => $sitemapCount, 'is_loaded' => 1]);
+            }
 
-        foreach ($dynamicUrlsModels as $model) {
-            $model = new $model();
-            if (method_exists($model, 'getUrls')) {
-                $modelUrls = $model->getUrls();
-                foreach ($modelUrls as $url) {
-                    $sitemapCount++;
-                    Sitemap::updateOrCreate(['alias' => $url, 'order' => $sitemapCount, 'is_loaded' => 1]);
+            $dynamicUrlsModels = config('sitemap.dynamic_url_classes');
+
+            foreach ($dynamicUrlsModels as $model) {
+                $model = new $model();
+                if (method_exists($model, 'getUrls')) {
+                    $modelUrls = $model->getUrls();
+                    foreach ($modelUrls as $url) {
+                        $sitemapCount++;
+                        Sitemap::updateOrCreate(['alias' => $url, 'order' => $sitemapCount, 'is_loaded' => 1]);
+                    }
                 }
             }
+
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
         }
+
+        DB::commit();
     }
 }

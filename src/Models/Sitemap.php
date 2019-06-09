@@ -4,6 +4,7 @@
 namespace Hantu\Sitemap\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 class Sitemap extends Model
 {
@@ -29,7 +30,7 @@ class Sitemap extends Model
     public function getChangefreqAttribute($value)
     {
         if (is_null($value)) {
-            return reset(self::$changefreq);
+            return Arr::first(self::$changefreq);
         }
         return in_array($value, self::$changefreq) ? $value : reset(self::$changefreq);
     }

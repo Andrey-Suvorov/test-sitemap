@@ -3,7 +3,6 @@
 namespace Hantu\Sitemap\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
 
 class SitemapRequest extends FormRequest
 {
@@ -26,6 +25,10 @@ class SitemapRequest extends FormRequest
     {
         return [
             'alias' => 'required|unique:sitemap,alias,'.$this->route('sitemap'),
+            'priority' => 'numeric',
+            'is_loaded' => 'integer',
+            'order' => 'integer',
+            'active' => 'integer',
         ];
     }
 

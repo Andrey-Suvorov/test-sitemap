@@ -10,7 +10,7 @@
         'filesystem_driver' => 'public',
 
         // routes middleware
-        'route_middleware' => [],
+        'route_middleware' => ['web'],
 
         // locales to multi-language urls
         'locales' => [
@@ -18,8 +18,8 @@
         ],
 
         /**
-         * to use feature your model have to implement Hantu\Sitemap\Interfaces\SitemapUrlsInterface
-         * and release method getUrls where you return array with prepared URL's for siteMap
+         * to use feature your model have to use trait Sitemap
+         * or release method getUrls where you return array with prepared URL's for siteMap
          */
         'dynamic_url_classes' => [
 

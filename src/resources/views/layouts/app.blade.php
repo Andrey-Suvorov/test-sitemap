@@ -27,6 +27,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Errors block -->
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         @if (session('success'))
                             <div class="alert alert-success">
@@ -46,21 +47,6 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
-                            @if (session('success'))
-                                <div class="alert alert-success">
-                                    <div class="text-center"style="font-size: large">{{ session('success') }}</div>
-                                </div>
-                            @endif
-
-                            @if (isset($errors) && $errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
                             @yield('content')
                         </div>
                     </div>

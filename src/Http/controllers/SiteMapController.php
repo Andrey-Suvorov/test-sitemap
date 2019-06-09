@@ -59,13 +59,7 @@ class SitemapController extends Controller
     public function store(SitemapRequest $request)
     {
         $sitemap = new Sitemap();
-        $sitemap->alias = $request->alias;
-        $sitemap->lastmod = $request->lastmod;
-        $sitemap->priority = (isset($request->priority)) ? $request->priority : 0;
-        $sitemap->changefreq = $request->changefreq;
-        $sitemap->is_active = isset($request->is_active);
-        $sitemap->order = (isset($request->order)) ? $request->order : Sitemap::all()->count() + 1;
-        $sitemap->save();
+        $sitemap = $this->repo->store($sitemap);
 
         Artisan::call('sitemap');
 
@@ -130,13 +124,7 @@ class SitemapController extends Controller
     public function update(SitemapRequest $request, $id)
     {
         $sitemap = Sitemap::find($id);
-        $sitemap->alias = $request->alias;
-        $sitemap->lastmod = $request->lastmod;
-        $sitemap->priority = $request->priority;
-        $sitemap->changefreq = $request->changefreq;
-        $sitemap->is_active = isset($request->is_active);
-        $sitemap->order = (isset($request->order)) ? $request->order : Sitemap::all()->count() + 1;
-        $sitemap->save();
+        $sitemap = $this->repo->store($sitemap);
 
         Artisan::call('sitemap');
 
