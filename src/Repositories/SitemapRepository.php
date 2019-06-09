@@ -9,7 +9,6 @@
 namespace Hantu\Sitemap\Repositories;
 
 use DB;
-use Hantu\Sitemap\Interfaces\SitemapUrlsInterface;
 use Hantu\Sitemap\Models\Sitemap;
 use Illuminate\Http\Request;
 
@@ -22,6 +21,11 @@ class SitemapRepository
     {
         $this->request = $request;
         $this->pages = config('sitemap.static_routes');
+    }
+
+    public function store()
+    {
+
     }
 
     /**
@@ -70,11 +74,9 @@ class SitemapRepository
 
         $dynamicUrlsModels = config('sitemap.dynamic_url_classes');
 
-
-
         foreach ($dynamicUrlsModels as $model) {
             $model = new $model();
-            if ($model instanceof SitemapUrlsInterface) {
+            if (method_exists($model, 'getUrls')) {
                 $modelUrls = $model->getUrls();
                 foreach ($modelUrls as $url) {
                     $sitemapCount++;

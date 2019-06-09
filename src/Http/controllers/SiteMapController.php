@@ -3,7 +3,6 @@
 namespace Hantu\Sitemap\Http\Controllers;
 
 use Artisan;
-use Hantu\Sitemap\Interfaces\SItemapUrlsInterface;
 use Hantu\Sitemap\Models\Sitemap;
 use Hantu\Sitemap\Repositories\SitemapRepository;
 use Hantu\Sitemap\Request\SitemapRequest;
@@ -123,7 +122,7 @@ class SitemapController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateRequest $request
+     * @param SitemapRequest $request
      * @param               $id
      *
      * @return \Illuminate\Http\RedirectResponse
