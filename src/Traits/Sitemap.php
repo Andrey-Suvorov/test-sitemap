@@ -10,7 +10,7 @@ trait Sitemap
 
     public $baseUrl = null;
 
-    public function getUrls()
+    public function getUrls() : array
     {
         if ($this->baseUrl) {
             $baseUrl = $this->baseUrl;
@@ -28,7 +28,7 @@ trait Sitemap
         return $urls;
     }
 
-    public function makeUrl($baseUrl, $item)
+    public function makeUrl($baseUrl, $item) : string
     {
         return $baseUrl . '/' . $item->{$this->columnName};
     }
