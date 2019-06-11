@@ -44,9 +44,10 @@ php artisan vendor:publish --tag=sitemap-styles
         /**
          * to use feature your model have to use trait Sitemap
          * or release method getUrls where you return array with prepared URL's for siteMap
+         * and add class to this array as in the example below 
          */
         'dynamic_url_classes' => [
-
+            \App\Models\Pages::class
         ],
 
         // Route names for siteMap

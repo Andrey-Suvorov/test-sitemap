@@ -13,7 +13,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Hantu\\Sitemap\\Providers\\SiteMapServiceProvider::class"
+                "Hantu\\Sitemap\\Providers\\SiteMapServiceProvider"
             ]
         }
     }
