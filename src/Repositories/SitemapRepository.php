@@ -62,46 +62,4 @@ class SitemapRepository
 
         return $result;
     }
-
-    /**
-     * Load URL's
-     *
-     * @throws \Exception
-     */
-    public function loadUrls()
-    {
-        DB::beginTransaction();
-
-        try {
-            Sitemap::where('is_loaded', 1)->delete();
-
-            $sitemapCount = Sitemap::all()->count();
-            $staticRoutes = config('sitemap.static_routes');
-
-            foreach ($staticRoutes as $routeName) {
-                $sitemapCount++;
-                Sitemap::updateOrCreate(['alias' => route($routeName), 'order' => $sitemapCount, 'is_loaded' => 1]);
-            }
-
-            $dynamicUrlsModels = config('sitemap.dynamic_url_classes');
-
-            foreach ($dynamicUrlsModels as $model) {
-                $model = new $model();
-                if (method_exists($model, 'getUrls')) {
-                    $modelUrls = $model->getUrls();
-                    foreach ($modelUrls as $url) {
-                        $sitemapCount++;
-                        Sitemap::updateOrCreate(['alias' => $url, 'order' => $sitemapCount, 'is_loaded' => 1]);
-                    }
-                }
-            }
-
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            throw $e;
-        }
-
-        DB::commit();
-    }
 }

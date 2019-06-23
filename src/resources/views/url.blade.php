@@ -1,5 +1,5 @@
 <url>
-    <loc>{{ 'ru' }}</loc>
+    <loc>{{ $alias }}</loc>
     @if(!is_null($changefreq))
         <changefreq>{{ $changefreq }}</changefreq>
     @endif

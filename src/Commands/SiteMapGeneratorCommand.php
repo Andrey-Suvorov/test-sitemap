@@ -14,7 +14,7 @@ class SiteMapGeneratorCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'sitemap';
+    protected $signature = 'sitemap:generate';
 
     /**
      * The console command description.
@@ -41,20 +41,23 @@ class SiteMapGeneratorCommand extends Command
      */
     public function handle()
     {
-        $pages = Sitemap::onlyActive()
-            ->get(['alias', 'lastmod', 'priority', 'changefreq'])
-            ->toArray();
+        $pages = Sitemap::select(['alias', 'lastmod', 'priority', 'changefreq'])->onlyActive();
+
         $sitemap = '';
-        $bar = $this->output->createProgressBar(count($pages));
+        $bar = $this->output->createProgressBar($pages->count());
 
         $bar->start();
-        foreach ($pages as $page) {
-            foreach (config('sitemap.locales') as $lang) {
-                $page = array_merge($page, ['locale' => $lang]);
-                $sitemap .= view('sitemap::url', $page)->render();
+        $pages->chunk(100, function ($pages) use ($bar, &$sitemap) {
+            foreach ($pages as $page) {
+                $page = $page->toArray();
+                foreach (config('sitemap.locales') as $lang) {
+                    $page = array_merge($page, ['locale' => $lang]);
+                    $sitemap .= view('sitemap::url', $page)->render();
+                }
+                $bar->advance();
             }
-            $bar->advance();
-        }
+        });
+
         $bar->finish();
         $this->info("\n");
         Storage::disk(config('sitemap.filesystem_driver', 'public'))

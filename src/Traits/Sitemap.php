@@ -18,12 +18,13 @@ trait Sitemap
             $baseUrl = url('/');
         }
 
-        $items = self::all();
         $urls = [];
 
-        foreach ($items as $item) {
-            $urls[] = $this->makeUrl($baseUrl, $item);
-        }
+        self::chunk(100, function ($items) use ($baseUrl, &$urls) {
+            foreach ($items as $item) {
+                $urls[] = $this->makeUrl($baseUrl, $item);
+            }
+        });
 
         return $urls;
     }

@@ -89,6 +89,27 @@ Or override the methods:
     }
 ```
 
+To upload URLs to the database you can use the interface button by the link: {yourAppUrl}/backend/sitemap
+or use command:
+
+```
+    php artisan sitemap:load:urls 
+```
+
+When you need to rewrite the URLs of a specific model, you can use the option --model=App/Models/Pages
+
+```
+    php artisan sitemap:load:urls --model=App/Models/Pages
+```
+
+To create a sitemap, use the command:
+
+```
+    php artisan sitemap:generate
+```
+
+Or you can use the interface button.
+
 ## What we can publish?
 
 ```

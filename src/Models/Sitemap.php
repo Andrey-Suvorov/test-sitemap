@@ -10,7 +10,7 @@ class Sitemap extends Model
 {
     public $timestamps = false;
     protected $table = 'sitemap';
-    protected $fillable = ['alias', 'priority', 'lastmod', 'changefreq', 'is_active', 'is_loaded', 'order'];
+    protected $fillable = ['alias', 'priority', 'lastmod', 'model', 'changefreq', 'is_active', 'is_loaded', 'order'];
 
     public static $changefreq = [
         'always',
@@ -33,11 +33,6 @@ class Sitemap extends Model
             return Arr::first(self::$changefreq);
         }
         return in_array($value, self::$changefreq) ? $value : reset(self::$changefreq);
-    }
-
-    public function getAliasAttribute($value)
-    {
-        return str_replace(env('APP_URL') . '/', '', $value);
     }
 
 }

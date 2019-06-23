@@ -2,6 +2,7 @@
 
 namespace Hantu\Sitemap\Providers;
 
+use Hantu\Sitemap\Commands\LoadUrlsCommand;
 use Hantu\Sitemap\Commands\SiteMapGeneratorCommand;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,7 +15,8 @@ class SiteMapServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'sitemap');
         $this->commands([
-            SiteMapGeneratorCommand::class
+            SiteMapGeneratorCommand::class,
+            LoadUrlsCommand::class
         ]);
 
         $this->publishes([

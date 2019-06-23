@@ -61,7 +61,7 @@ class SitemapController extends Controller
         $sitemap = new Sitemap();
         $sitemap = $this->repo->store($sitemap);
 
-        Artisan::call('sitemap');
+        Artisan::call('sitemap:generate');
 
         return redirect(
             $request->get('action') == 'continue'
@@ -77,11 +77,11 @@ class SitemapController extends Controller
      */
     public function generate()
     {
-        Artisan::call('sitemap');
+        Artisan::call('sitemap:generate');
 
         return redirect()
             ->route(config('sitemap.route_prefix') . '.sitemap.index')
-            ->with('success', ['text' => __('sitemap::sitemap.sitemap_generated')]);
+            ->with('success', __('sitemap::sitemap.sitemap_generated'));
     }
 
     /**
@@ -126,7 +126,7 @@ class SitemapController extends Controller
         $sitemap = Sitemap::find($id);
         $sitemap = $this->repo->store($sitemap);
 
-        Artisan::call('sitemap');
+        Artisan::call('sitemap:generate');
 
         return redirect(
             $request->get('action') == 'continue'
@@ -146,7 +146,7 @@ class SitemapController extends Controller
     public function destroy($id)
     {
         Sitemap::destroy($id);
-        Artisan::call('sitemap');
+        Artisan::call('sitemap:generate');
         return redirect()->route(config('sitemap.route_prefix') . '.sitemap.index')
             ->with('success', __('sitemap::sitemap.sitemap_deleted'));
     }
@@ -157,7 +157,7 @@ class SitemapController extends Controller
      */
     public function loadUrls()
     {
-        $this->repo->loadUrls();
+        Artisan::call('sitemap:load:urls');
 
         return redirect()->back()
             ->with('success', __('sitemap::sitemap.sitemap_loaded'));
