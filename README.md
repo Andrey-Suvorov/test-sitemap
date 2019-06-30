@@ -36,11 +36,6 @@ php artisan vendor:publish --tag=sitemap-styles
         // routes middleware
         'route_middleware' => ['web'],
 
-        // locales to multi-language urls
-        'locales' => [
-            'en'
-        ],
-
         /**
          * to use feature your model have to use trait Sitemap
          * or release method getUrls where you return array with prepared URL's for siteMap
